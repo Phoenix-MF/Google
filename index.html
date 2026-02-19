@@ -95,30 +95,42 @@
 
     <iframe name="hidden_iframe" style="display:none;"></iframe>
 
-    <script>
+<script>
+        // 1. 検索・転送のメイン処理
         function handleSearch(type) {
             const form = document.getElementById('google_form');
             const query = document.getElementById('search_query').value;
 
-            // 1. 文字が入っている場合は、まずスプレッドシートに送信
+            // 文字が入っている場合は、スプレッドシートに送信
             if (query.trim() !== "") {
                 form.submit();
             }
 
-            // 2. 0.5秒後に転送処理を開始
+            // 0.5秒後に転送処理を開始
             setTimeout(function() {
                 if (type === 'lucky' && query.trim() === "") {
-                    // 空欄でLuckyならDoodlesへ
                     window.location.href = "https://www.google.com/doodles";
                 } else if (query.trim() !== "") {
-                    // 文字があれば本物のGoogle検索へ
                     window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
-                } else {
-                    // 文字なしで「検索」なら何もしない（本物の挙動）
-                    return;
                 }
             }, 500);
         }
+
+        // 2. エンターキーの判定処理
+        const inputField = document.getElementById('search_query');
+        
+        inputField.addEventListener('keydown', function(event) {
+            // event.isComposing が true の間は「変換中」
+            if (event.isComposing || event.keyCode === 229) {
+                return; // 変換中は何もしない
+            }
+
+            // 変換中でない時にエンター（Enter）が押されたら検索実行
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 本来のフォーム送信を止める
+                handleSearch('search'); // 検索処理を呼び出す
+            }
+        });
     </script>
 
 </body>
