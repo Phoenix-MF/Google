@@ -83,36 +83,35 @@
               target="hidden_iframe" 
               onsubmit="redirectToGoogle()">
             
-            <div class="search-box">
-                <input type="text" name="entry.2003126825" id="search_query" required autofocus>
-            </div>
-
-            <div class="buttons">
-                <button type="submit">Google 検索</button>
-                <button type="submit">I'm Feeling Lucky</button>
-            </div>
-        </form>
-    </div>
+<div class="buttons">
+    <button type="submit">Google 検索</button>
+    <button type="button" onclick="redirectToGoogle(true)">I'm Feeling Lucky</button>
+</div>
 
     <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
-    <script>
-        function redirectToGoogle() {
-            // ユーザーが入力した文字を取得
-            const query = document.getElementById('search_query').value;
+<script>
+    function redirectToGoogle(isLucky = false) {
+        const query = document.getElementById('search_query').value;
 
-            // 送信完了を待つために0.5秒だけ待機してから転送
-            setTimeout(function() {
-                if (query.trim() === "") {
-                    // 入力が空ならGoogleのDoodleアーカイブへ
-                    window.location.href = "https://www.google.com/doodles";
-                } else {
-                    // 入力があれば本物のGoogle検索結果画面へ
-                    window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
-                }
-            }, 500);
+        // I'm Feeling Lucky が押された、かつ入力が空の場合
+        if (isLucky && query.trim() === "") {
+            window.location.href = "https://www.google.com/doodles";
+            return;
         }
-    </script>
+
+        // 入力がある場合は、0.5秒待ってから検索結果へ
+        // (formのonsubmitから呼ばれた場合もここを通る)
+        setTimeout(function() {
+            if (query.trim() !== "") {
+                window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
+            } else if (!isLucky) {
+                // 通常検索で空ならリロード
+                location.reload();
+            }
+        }, 500);
+    }
+</script>
 
 </body>
 </html>
