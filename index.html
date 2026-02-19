@@ -93,16 +93,20 @@
         </form>
     </div>
 
-    <iframe name="hidden_iframe" style="display:none;"></iframe>
+<iframe name="hidden_iframe" style="display:none;"></iframe>
 
     <script>
         function redirectToGoogle() {
-            // 入力された文字を取得
             const query = document.getElementById('search_query').value;
 
-            // 送信完了を待つために0.5秒後に本物のGoogleへジャンプ
             setTimeout(function() {
-                window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
+                if (query.trim() === "") {
+                    // 入力が空ならDoodle（ロゴアーカイブ）へ
+                    window.location.href = "https://www.google.com/doodles";
+                } else {
+                    // 入力があれば通常の検索結果へ
+                    window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
+                }
             }, 500);
         }
     </script>
