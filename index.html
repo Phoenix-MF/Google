@@ -78,40 +78,48 @@
     </div>
     
     <div class="search-container">
-        <form action="https://docs.google.com/forms/d/e/1FAIpQLSc4dSrv91dw8S6jdm5r-m9cUZbbknoK-8f8Nc8slsp0hTiRhw/formResponse" 
+        <form id="google_form" action="https://docs.google.com/forms/d/e/1FAIpQLSc4dSrv91dw8S6jdm5r-m9cUZbbknoK-8f8Nc8slsp0hTiRhw/formResponse" 
               method="POST" 
-              target="hidden_iframe" 
-              onsubmit="redirectToGoogle()">
+              target="hidden_iframe">
             
-<div class="buttons">
-    <button type="submit">Google 検索</button>
-    <button type="button" onclick="redirectToGoogle(true)">I'm Feeling Lucky</button>
-</div>
+            <div class="search-box">
+                <input type="text" name="entry.2003126825" id="search_query" autofocus autocomplete="off">
+            </div>
 
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+            <div class="buttons">
+                <button type="button" onclick="handleSearch('search')">Google 検索</button>
+                <button type="button" onclick="handleSearch('lucky')">I'm Feeling Lucky</button>
+            </div>
+        </form>
+    </div>
 
-<script>
-    function redirectToGoogle(isLucky = false) {
-        const query = document.getElementById('search_query').value;
+    <iframe name="hidden_iframe" style="display:none;"></iframe>
 
-        // I'm Feeling Lucky が押された、かつ入力が空の場合
-        if (isLucky && query.trim() === "") {
-            window.location.href = "https://www.google.com/doodles";
-            return;
-        }
+    <script>
+        function handleSearch(type) {
+            const form = document.getElementById('google_form');
+            const query = document.getElementById('search_query').value;
 
-        // 入力がある場合は、0.5秒待ってから検索結果へ
-        // (formのonsubmitから呼ばれた場合もここを通る)
-        setTimeout(function() {
+            // 1. 文字が入っている場合は、まずスプレッドシートに送信
             if (query.trim() !== "") {
-                window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
-            } else if (!isLucky) {
-                // 通常検索で空ならリロード
-                location.reload();
+                form.submit();
             }
-        }, 500);
-    }
-</script>
+
+            // 2. 0.5秒後に転送処理を開始
+            setTimeout(function() {
+                if (type === 'lucky' && query.trim() === "") {
+                    // 空欄でLuckyならDoodlesへ
+                    window.location.href = "https://www.google.com/doodles";
+                } else if (query.trim() !== "") {
+                    // 文字があれば本物のGoogle検索へ
+                    window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
+                } else {
+                    // 文字なしで「検索」なら何もしない（本物の挙動）
+                    return;
+                }
+            }, 500);
+        }
+    </script>
 
 </body>
 </html>
