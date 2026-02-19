@@ -20,6 +20,7 @@
             font-weight: bold;
             margin-bottom: 30px;
             user-select: none;
+            cursor: default;
         }
         .g { color: #4285F4; } .o1 { color: #EA4335; } .o2 { color: #FBBC05; }
         .g2 { color: #4285F4; } .l { color: #34A853; } .e { color: #EA4335; }
@@ -86,29 +87,32 @@
                 <input type="text" name="entry.2003126825" id="search_query" required autofocus>
             </div>
 
-           <div class="buttons">
-                <button type="submit" name="btnK">Google 検索</button>
-                <button type="submit" name="btnI">I'm Feeling Lucky</button>
+            <div class="buttons">
+                <button type="submit">Google 検索</button>
+                <button type="submit">I'm Feeling Lucky</button>
             </div>
         </form>
     </div>
 
-<iframe name="hidden_iframe" style="display:none;"></iframe>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
     <script>
         function redirectToGoogle() {
+            // ユーザーが入力した文字を取得
             const query = document.getElementById('search_query').value;
 
+            // 送信完了を待つために0.5秒だけ待機してから転送
             setTimeout(function() {
                 if (query.trim() === "") {
-                    // 入力が空ならDoodle（ロゴアーカイブ）へ
+                    // 入力が空ならGoogleのDoodleアーカイブへ
                     window.location.href = "https://www.google.com/doodles";
                 } else {
-                    // 入力があれば通常の検索結果へ
+                    // 入力があれば本物のGoogle検索結果画面へ
                     window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(query);
                 }
             }, 500);
         }
     </script>
+
 </body>
 </html>
